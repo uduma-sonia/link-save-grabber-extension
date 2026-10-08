@@ -8,18 +8,29 @@ function renderLinks(links) {
   links.forEach((link, index) => {
     const li = document.createElement("li");
 
+    const anchorWrap = document.createElement("div");
+
     const anchor = document.createElement("a");
     anchor.href = link;
     anchor.textContent = link;
     anchor.target = "_blank";
 
+    anchorWrap.appendChild(anchor);
+
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "X";
     deleteBtn.onclick = () => deleteLink(index);
 
-    li.appendChild(anchor);
+    li.appendChild(anchorWrap);
     li.appendChild(deleteBtn);
     linkList.prepend(li);
+  });
+}
+
+function loadLinks() {
+  chrome.storage.sync.get("links", (data) => {
+    const links = data.links || [];
+    renderLinks(links);
   });
 }
 
@@ -57,13 +68,6 @@ saveCurrentTabBtn.addEventListener("click", () => {
     }
   });
 });
-
-function loadLinks() {
-  chrome.storage.sync.get("links", (data) => {
-    const links = data.links || [];
-    renderLinks(links);
-  });
-}
 
 addBtn.addEventListener("click", addLink);
 loadLinks();
